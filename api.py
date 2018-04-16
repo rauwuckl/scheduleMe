@@ -29,8 +29,14 @@ def get_free_dates(month_id, year_id):
 
     r = requests.get(url_template.format(month=month_id, year=year_id))
 
+    if r.status_code != 200:
+        print("Getting dates failed:")
+        print(r)
+        print(r.json())
+        print(r.text)
+
     if r.json() is None:
-        print("Nothing availiable at {}.{}".format(month_id, year_id))
+        # print("Nothing availiable at {}.{}".format(month_id, year_id))
         return None
     else:
         available_days = r.json()[str(year_id)][str(month_id)]
@@ -122,26 +128,22 @@ def book_appoitment(appoitment_time, user):
 
     url_string = urllib.parse.urlencode(form_data)
 
-    print(url_string)
-
     r = requests.post(url, data=url_string, headers=form_header, cookies=user.cookies)
 
     return r.json()
 
-
-
-free_dates = get_free_dates(10, 2018)
-d1 = free_dates[-1]
-
-times = get_free_times(d1)
-
-last_time = times[-1]
-
-
-user = User(first_name="Clemens", last_name="Hutter", email="ch.23@web.de", phone="394993")
-
-t = datetime.datetime.now() + datetime.timedelta(days=1)
-
-print(t)
-
-booked = book_appoitment(t, user)
+# free_dates = get_free_dates(10, 2018)
+# d1 = free_dates[-1]
+#
+# times = get_free_times(d1)
+#
+# last_time = times[-1]
+#
+#
+# user = User(first_name="Clemens", last_name="Hutter", email="ch.23@web.de", phone="394993")
+#
+# t = datetime.datetime.now() + datetime.timedelta(days=1)
+#
+# print(t)
+#
+# booked = book_appoitment(t, user)

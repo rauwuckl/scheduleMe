@@ -1,6 +1,7 @@
 import api
 import datetime
 import json
+import pytz
 max_days_in_future = 5
 
 
@@ -16,7 +17,7 @@ class Scheduler:
 
     def try_schedule_within_limit(self):
         if self.fake_today_debug is None:
-            today = datetime.date.today()
+            today = datetime.datetime.now(pytz.timezone("Europe/Berlin")).today()
         else:
             today = self.fake_today_debug
 
@@ -80,6 +81,8 @@ class Scheduler:
 
 
 if __name__ == "__main__":
+    timeAndDate = datetime.datetime.now(pytz.timezone("Europe/Berlin"))
+    print("Now it is {} on {} in Germany".format(timeAndDate.time(), timeAndDate.date()))
     scheduler = Scheduler("user.json")
     scheduler.continously_book(0.1, None)
 

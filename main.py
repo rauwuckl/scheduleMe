@@ -12,7 +12,7 @@ class Scheduler:
 
         self.max_days_in_future = 5
 
-        self.fake_today_debug = None#datetime.date(year=2018, month=9, day=24)
+        self.fake_today_debug = datetime.date(year=2018, month=10, day=24)
 
     def save_try_schedule_within_limit(self):
         try:
@@ -25,13 +25,13 @@ class Scheduler:
 
     def try_schedule_within_limit(self):
         if self.fake_today_debug is None:
-            today = datetime.datetime.now(pytz.timezone("Europe/Berlin")).today()
+            today = datetime.datetime.now(pytz.timezone("Europe/Berlin")).date()
         else:
             today = self.fake_today_debug
 
         tomorrow = today + datetime.timedelta(days=1)
 
-        free_dates = api.get_free_dates(year_id= tomorrow.year, month_id= tomorrow.month)
+        free_dates = api.get_free_dates(year_id = tomorrow.year, month_id = tomorrow.month)
 
         if free_dates is None:
             print("*", end=" ", flush=True)

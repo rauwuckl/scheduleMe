@@ -14,6 +14,14 @@ class Scheduler:
 
         self.fake_today_debug = None#datetime.date(year=2018, month=9, day=24)
 
+    def save_try_schedule_within_limit(self):
+        try:
+            return self.try_schedule_within_limit()
+        except Exception as e:
+            print("Something went wrong:")
+            print(e)
+
+
 
     def try_schedule_within_limit(self):
         if self.fake_today_debug is None:
@@ -72,7 +80,7 @@ class Scheduler:
         while(not booking_succesfull and i <= n_max_tries):
             i += increment
 
-            booking_succesfull = self.try_schedule_within_limit()
+            booking_succesfull = self.save_try_schedule_within_limit()
 
         if booking_succesfull:
             print("succesfully booked date")

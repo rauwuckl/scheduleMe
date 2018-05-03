@@ -97,7 +97,7 @@ class Scheduler:
 
 
 if __name__ == "__main__":
-    timeAndDate = datetime.datetime.now(pytz.timezone("Europe/Berlin"))
+    timeAndDate = datetime.datetime.now(pytz.timezone("Europe/Berlin")).replace(tzinfo=None)
     print("Now it is {} on {} in Germany".format(timeAndDate.time(), timeAndDate.date()))
     scheduler = Scheduler("user.json")
     scheduler.continously_book(0.1, None)

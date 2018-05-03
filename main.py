@@ -2,6 +2,7 @@ import api
 import datetime
 import json
 import pytz
+import traceback
 max_days_in_future = 5
 
 
@@ -12,7 +13,7 @@ class Scheduler:
 
         self.max_days_in_future = 5
 
-        self.fake_today_debug = None#datetime.date(year=2018, month=10, day=24)
+        self.fake_today_debug = None#datetime.date(year=2018, month=10, day=18)
 
     def save_try_schedule_within_limit(self):
         try:
@@ -20,6 +21,8 @@ class Scheduler:
         except Exception as e:
             print("Something went wrong:")
             print(e)
+            print(traceback.format_exc())
+
 
 
 
@@ -49,14 +52,19 @@ class Scheduler:
 
             last_free_time = free_times[-1]
 
-            print("Trying to book appoitment at {}".format(last_free_time))
+            if last_free_time - datetime.datetime.now(pytz.timezone("Europe/Berlin")).replace(tzinfo=None) > datetime.timedelta(hours=1):
 
-            result = api.book_appoitment(last_free_time, self.user)
+                print("Trying to book appoitment at {}".format(last_free_time))
 
-            with open("output.json", "w") as f:
-                json.dump(result, f)
+                result = api.book_appoitment(last_free_time, self.user)
 
-            return True
+                with open("output.json", "w") as f:
+                    json.dump(result, f)
+
+                return True
+            else:
+                print("{} was to soon".format(last_free_time))
+                return False
 
         else:
             print("First free date is too far in the future {}".format(first_free_date))
@@ -93,9 +101,3 @@ if __name__ == "__main__":
     print("Now it is {} on {} in Germany".format(timeAndDate.time(), timeAndDate.date()))
     scheduler = Scheduler("user.json")
     scheduler.continously_book(0.1, None)
-
-
-
-
-
-

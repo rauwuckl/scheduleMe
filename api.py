@@ -56,6 +56,7 @@ def get_free_times(date):
     r = requests.post(url, data=data_template.format(date_string=date_string), headers=form_header)
     response = r.json()
     if response['slots'] is None:
+        print("No times found for {}".format(date))
         return None
     else:
         date_time_objects = [datetime.datetime.combine(date, parse_time(time_string))for time_string in response['slots']]

@@ -11,6 +11,8 @@ class Scheduler:
     def __init__(self, user_file):
         self.user = api.User.load_user_from_json(user_file)
 
+        self.user.login()
+
         self.max_days_in_future = 5
 
         self.fake_today_debug = None #datetime.date(year=2018, month=11, day=14)

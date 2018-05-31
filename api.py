@@ -83,7 +83,10 @@ class User:
 
         return User(**info)
 
-    def __init__(self, first_name, last_name, email):
+    def __init__(self, first_name, last_name, email, **kwargs):
+        if(len(kwargs)!= 0):
+            print("User got more input arguments for some reason")
+
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
@@ -145,9 +148,8 @@ def book_appoitment(appoitment_time, user):
 #
 #
 # if __name__ == "__main__":
-#     user = User(first_name="Clemens", last_name="Hutter", email="ch.23@web.de")
+#     user = User(first_name="Ann", last_name="Xavier", email="ch.23@web.de")
 #     user.login()
-
 #
 # t = datetime.datetime.now() + datetime.timedelta(days=1)
 #

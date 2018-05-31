@@ -83,11 +83,11 @@ class User:
 
         return User(**info)
 
-    def __init__(self, first_name, last_name, email, phone):
+    def __init__(self, first_name, last_name, email):
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
-        self.phone = phone
+        # self.phone = phone
 
         self.user_id = None
         self.hash = None
@@ -96,10 +96,12 @@ class User:
     def login(self):
         data = {"register_first_name": self.first_name,
             "register_last_name": self.last_name,
-            "register_telephone": self.phone,
+            # "register_telephone": self.phone,
             "register_email": self.email}
 
-        url_string = urllib.parse.urlencode(data)
+        weird_accept_agb_string = "&register_tacAgb=0&register_tacAgb=1&register_tacDs=0&register_tacDs=1&register_tacAge=0&register_tacAge=1&register_tacData=0&register_tacData=1"
+
+        url_string = urllib.parse.urlencode(data) + weird_accept_agb_string
         # print(url_string)
 
         url = "https://timeacle.com/ajaxform/register/type/nopass"
@@ -141,7 +143,11 @@ def book_appoitment(appoitment_time, user):
 # last_time = times[-1]
 #
 #
-# user = User(first_name="Clemens", last_name="Hutter", email="ch.23@web.de", phone="394993")
+#
+# if __name__ == "__main__":
+#     user = User(first_name="Clemens", last_name="Hutter", email="ch.23@web.de")
+#     user.login()
+
 #
 # t = datetime.datetime.now() + datetime.timedelta(days=1)
 #

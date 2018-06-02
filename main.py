@@ -15,7 +15,7 @@ class Scheduler:
 
         self.max_days_in_future = 5
 
-        self.fake_today_debug = None #datetime.date(year=2018, month=11, day=14)
+        self.fake_today_debug = datetime.date(year=2018, month=11, day=14)
 
     def save_try_schedule_within_limit(self):
         try:
@@ -52,25 +52,38 @@ class Scheduler:
 
             free_times = api.get_free_times(first_free_date)
 
-            last_free_time = free_times[-1]
+            acceptable_times = [f for f in free_times if self.time_is_acceptable(f)]
 
-            if last_free_time - datetime.datetime.now(pytz.timezone("Europe/Berlin")).replace(tzinfo=None) > datetime.timedelta(hours=1):
+            if len(acceptable_times) != 0:
 
-                print("Trying to book appoitment at {}".format(last_free_time))
+                best_time = acceptable_times[0]
 
-                result = api.book_appoitment(last_free_time, self.user)
+                print("Trying to book appoitment at {}".format(best_time))
+
+                result = api.book_appoitment(best_time, self.user)
 
                 with open("output.json", "w") as f:
                     json.dump(result, f)
 
                 return True
             else:
-                print("{} was to soon".format(last_free_time))
+                print("No acceptable time found")
                 return False
 
         else:
             print("First free date is too far in the future {}".format(first_free_date))
             return False
+
+    def time_is_acceptable(self, time):
+        bool_val = ((time - datetime.datetime.now(pytz.timezone("Europe/Berlin")).replace(
+            tzinfo=None)) > datetime.timedelta(hours=1))
+
+        if not bool_val:
+            print("Appointment {} was sorted out at {}".format(time, datetime.datetime.now(pytz.timezone("Europe/Berlin"))))
+
+        return bool_val
+
+
 
     def continously_book(self, repeat_delay, max_try_time = None):
         """repeat_delay and max_try_time in seconds"""

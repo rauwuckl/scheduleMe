@@ -15,7 +15,7 @@ class Scheduler:
 
         self.max_days_in_future = 5
 
-        self.fake_today_debug = datetime.date(year=2018, month=11, day=14)
+        self.fake_today_debug = None #datetime.date(year=2018, month=11, day=14)
 
     def save_try_schedule_within_limit(self):
         try:

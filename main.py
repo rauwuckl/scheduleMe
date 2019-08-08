@@ -3,7 +3,10 @@ import datetime
 import json
 import pytz
 import traceback
+min_hours_from_now = 2
 max_days_in_future = 5
+
+earliest_time_in_day = True # if false it will book the latest available appointment on that day
 
 
 
@@ -14,8 +17,9 @@ class Scheduler:
         self.user.login()
 
         self.max_days_in_future = 5
+        self.min_hours_from_now = 2
 
-        self.fake_today_debug = None #datetime.date(year=2018, month=11, day=14)
+        self.fake_today_debug = None # datetime.date(year=2019, month=7, day=15)
 
     def save_try_schedule_within_limit(self):
         try:
@@ -55,8 +59,11 @@ class Scheduler:
             acceptable_times = [f for f in free_times if self.time_is_acceptable(f)]
 
             if len(acceptable_times) != 0:
-
-                best_time = acceptable_times[0]
+                if earliest_time_in_day:
+                    best_time = acceptable_times[0]
+                else:
+                    best_time = acceptable_times[-1]
+                
 
                 print("Trying to book appoitment at {}".format(best_time))
 
@@ -76,7 +83,7 @@ class Scheduler:
 
     def time_is_acceptable(self, time):
         bool_val = ((time - datetime.datetime.now(pytz.timezone("Europe/Berlin")).replace(
-            tzinfo=None)) > datetime.timedelta(hours=1))
+            tzinfo=None)) > datetime.timedelta(hours=self.min_hours_from_now))
 
         if not bool_val:
             print("Appointment {} was sorted out at {}".format(time, datetime.datetime.now(pytz.timezone("Europe/Berlin"))))

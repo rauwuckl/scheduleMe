@@ -3,6 +3,7 @@ import datetime
 import json
 import pytz
 import traceback
+import argparse
 min_hours_from_now = 2
 max_days_in_future = 5
 
@@ -11,7 +12,7 @@ earliest_time_in_day = True # if false it will book the latest available appoint
 
 
 class Scheduler:
-    def __init__(self, user_file):
+    def __init__(self, user_file, today=None):
         self.user = api.User.load_user_from_json(user_file)
 
         self.user.login()
@@ -19,7 +20,7 @@ class Scheduler:
         self.max_days_in_future = 5
         self.min_hours_from_now = 2
 
-        self.fake_today_debug = None # datetime.date(year=2019, month=7, day=15)
+        self.set_today = today # datetime.date(year=2019, month=7, day=15)
 
     def save_try_schedule_within_limit(self):
         try:
@@ -31,12 +32,11 @@ class Scheduler:
 
 
 
-
     def try_schedule_within_limit(self):
-        if self.fake_today_debug is None:
+        if self.set_today is None:
             today = datetime.datetime.now(pytz.timezone("Europe/Berlin")).date()
         else:
-            today = self.fake_today_debug
+            today = self.set_today
 
         tomorrow = today + datetime.timedelta(days=1)
 
@@ -63,7 +63,7 @@ class Scheduler:
                     best_time = acceptable_times[0]
                 else:
                     best_time = acceptable_times[-1]
-                
+
 
                 print("Trying to book appoitment at {}".format(best_time))
 
@@ -119,7 +119,20 @@ class Scheduler:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--book_date', default="", type=str)
+    ARGS = parser.parse_args()
+
     timeAndDate = datetime.datetime.now(pytz.timezone("Europe/Berlin")).replace(tzinfo=None)
     print("Now it is {} on {} in Germany".format(timeAndDate.time(), timeAndDate.date()))
-    scheduler = Scheduler("user.json")
-    scheduler.continously_book(0.1, None)
+
+    if ARGS.book_date == "":
+        print("booking today")
+        scheduler = Scheduler("user.json")
+        scheduler.continously_book(0.1, None)
+    else:
+        fake_today = datetime.datetime.strptime(ARGS.book_date, "%d.%m.%Y").date()
+
+        print("trying to book on the day after {}".format(fake_today))
+        scheduler = Scheduler("user.json", fake_today)
+        scheduler.continously_book(0.1, None)

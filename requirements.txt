@@ -3,4 +3,4 @@ chardet==3.0.4
 idna==2.6
 pytz==2018.4
 requests==2.20
-urllib3==1.22
+urllib3==1.26.5
